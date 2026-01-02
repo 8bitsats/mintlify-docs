@@ -1,0 +1,156 @@
+---
+title: "Agent integration"
+description: "Deploy agents as market makers on Phoenix DEX"
+---
+
+Deploy FunPump agents as autonomous market makers on Phoenix DEX. Agents can manage orders, adjust spreads, and optimize inventory automatically.
+
+## Deploy agent as market maker
+
+Configure an agent to act as a market maker on Phoenix.
+
+```typescript
+const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+  agent.agentId,
+  market,
+  {
+    market,
+    quoteEdgeInBps: 25,
+    quoteSizeInQuoteAtoms: 5_000_000_000,
+    priceImprovementBehavior: 'join',
+  }
+);
+
+console.log('Agent deployed as market maker:', deployment.deploymentId);
+```
+
+## Parameters
+
+<ParamField path="agentId" type="PublicKey" required>
+  The agent ID to deploy as a market maker.
+</ParamField>
+
+<ParamField path="market" type="PublicKey" required>
+  The Phoenix market address.
+</ParamField>
+
+<ParamField path="config" type="MarketMakerConfig" required>
+  The market maker configuration.
+</ParamField>
+
+## Agent market making strategies
+
+### Inventory management
+
+Agents automatically manage inventory to maintain target levels.
+
+```typescript
+const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+  agent.agentId,
+  market,
+  {
+    market,
+    quoteEdgeInBps: 30,
+    quoteSizeInQuoteAtoms: 1_000_000_000,
+    priceImprovementBehavior: 'dime',
+    inventoryTarget: 50, // Target 50% inventory
+    rebalanceThreshold: 10, // Rebalance at 10% deviation
+  }
+);
+```
+
+### Dynamic spreads
+
+Agents adjust spreads based on market conditions.
+
+```typescript
+const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+  agent.agentId,
+  market,
+  {
+    market,
+    quoteEdgeInBps: 25,
+    quoteSizeInQuoteAtoms: 2_000_000_000,
+    priceImprovementBehavior: 'join',
+    dynamicSpreads: true,
+    minSpreadBps: 15,
+    maxSpreadBps: 50,
+  }
+);
+```
+
+### Risk management
+
+Agents monitor and manage risk automatically.
+
+```typescript
+const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+  agent.agentId,
+  market,
+  {
+    market,
+    quoteEdgeInBps: 30,
+    quoteSizeInQuoteAtoms: 1_000_000_000,
+    priceImprovementBehavior: 'dime',
+    maxPositionSize: 100_000,
+    stopLossPercentage: 5,
+  }
+);
+```
+
+## Monitor agent performance
+
+Track the performance of your agent market maker.
+
+```typescript
+const performance = await sdk.phoenixMM?.getAgentPerformance(
+  agent.agentId,
+  market
+);
+
+console.log('Total volume:', performance.totalVolume);
+console.log('Fees earned:', performance.feesEarned);
+console.log('PnL:', performance.pnl);
+console.log('Uptime:', performance.uptime);
+```
+
+## Pause and resume
+
+Control agent market making activity.
+
+```typescript
+// Pause market making
+await sdk.phoenixMM?.pauseAgent(agent.agentId, market);
+
+// Resume market making
+await sdk.phoenixMM?.resumeAgent(agent.agentId, market);
+```
+
+## Update configuration
+
+Adjust market maker configuration on the fly.
+
+```typescript
+await sdk.phoenixMM?.updateAgentConfig(
+  agent.agentId,
+  market,
+  {
+    quoteEdgeInBps: 35, // Widen spread
+    quoteSizeInQuoteAtoms: 2_000_000_000, // Increase size
+  }
+);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Market maker setup" icon="chart-line" href="/phoenix-dex/market-maker">
+  Learn about market maker configuration.
+</Card>
+
+<Card title="Performance monitoring" icon="chart-area" href="/phoenix-dex/monitoring">
+  Track market maker performance.
+</Card>
+
+</CardGroup>
