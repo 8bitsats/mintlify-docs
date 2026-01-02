@@ -1,0 +1,133 @@
+---
+title: "Token launch"
+description: "Launch tokens with bonding curves and initial liquidity"
+---
+
+Launch tokens on Solana with customizable bonding curves, initial liquidity, and metadata. The FunPump SDK handles all the complexity of token creation, bonding curve initialization, and liquidity provisioning.
+
+## Basic token launch
+
+Create a token with a constant product bonding curve.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+import { LaunchPlatform, CurveType } from '@funpump/sdk';
+
+const { instruction, tokenMint } = await sdk.core.launchToken({
+  creator: wallet.publicKey,
+  name: 'My Token',
+  symbol: 'MTK',
+  uri: 'https://arweave.net/metadata',
+  decimals: 9,
+  supply: new BN(1_000_000_000).mul(new BN(10).pow(new BN(9))), // 1B tokens
+  initialSolReserves: new BN(1).mul(new BN(10).pow(new BN(9))), // 1 SOL
+  platform: LaunchPlatform.FunPump,
+  curve: CurveType.ConstantProduct,
+});
+
+// Sign and send transaction
+const tx = new Transaction().add(instruction);
+await sendAndConfirmTransaction(connection, tx, [wallet, tokenMint]);
+```
+
+## Parameters
+
+<ParamField path="creator" type="PublicKey" required>
+  The wallet address that will create and own the token.
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The full name of the token (e.g., "My Token").
+</ParamField>
+
+<ParamField path="symbol" type="string" required>
+  The token symbol (e.g., "MTK").
+</ParamField>
+
+<ParamField path="uri" type="string" required>
+  The metadata URI (typically an Arweave link).
+</ParamField>
+
+<ParamField path="decimals" type="number" required>
+  The number of decimal places (typically 9 for Solana tokens).
+</ParamField>
+
+<ParamField path="supply" type="BN" required>
+  The total token supply in base units.
+</ParamField>
+
+<ParamField path="initialSolReserves" type="BN" required>
+  The initial SOL liquidity for the bonding curve.
+</ParamField>
+
+<ParamField path="platform" type="LaunchPlatform" required>
+  The launch platform (FunPump or PumpFun).
+</ParamField>
+
+<ParamField path="curve" type="CurveType" required>
+  The bonding curve type (ConstantProduct or Linear).
+</ParamField>
+
+## Launch platforms
+
+### FunPump
+
+The native FunPump platform with full feature support.
+
+```typescript
+platform: LaunchPlatform.FunPump
+```
+
+### PumpFun
+
+Integration with Pump.fun for broader compatibility.
+
+```typescript
+platform: LaunchPlatform.PumpFun
+```
+
+## Curve types
+
+### Constant product
+
+The x * y = k curve provides stable price discovery and is ideal for most use cases.
+
+```typescript
+curve: CurveType.ConstantProduct
+```
+
+### Linear
+
+Linear price progression provides predictable pricing.
+
+```typescript
+curve: CurveType.Linear
+```
+
+## Token metadata
+
+Upload your token metadata to Arweave or IPFS before launching. The metadata should follow the Metaplex standard.
+
+```json
+{
+  "name": "My Token",
+  "symbol": "MTK",
+  "description": "A token for my project",
+  "image": "https://arweave.net/image.png",
+  "attributes": []
+}
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+<Card title="Bonding curves" icon="chart-area" href="/core-protocol/bonding-curves">
+  Understand how bonding curves work.
+</Card>
+
+</CardGroup>
