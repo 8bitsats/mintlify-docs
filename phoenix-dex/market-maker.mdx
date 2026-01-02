@@ -1,0 +1,158 @@
+---
+title: "Market maker setup"
+description: "Initialize and configure market makers on Phoenix DEX"
+---
+
+Set up professional market makers on Phoenix DEX with customizable spreads, position sizes, and price improvement strategies. The SDK handles all the complexity of order management and position tracking.
+
+## Initialize market maker
+
+Create a market maker for a specific Phoenix market.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30, // 0.3% spread
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime' as const,
+};
+
+const tx = await sdk.phoenixMM?.initializeMarketMaker(
+  trader.publicKey,
+  config
+);
+
+await sendAndConfirmTransaction(connection, tx, [trader]);
+```
+
+## Configuration parameters
+
+<ParamField path="market" type="PublicKey" required>
+  The Phoenix market address.
+</ParamField>
+
+<ParamField path="quoteEdgeInBps" type="number" required>
+  The spread in basis points (30 = 0.3%).
+</ParamField>
+
+<ParamField path="quoteSizeInQuoteAtoms" type="number" required>
+  The quote size in quote token atoms.
+</ParamField>
+
+<ParamField path="postOnly" type="boolean" required>
+  Whether to only place maker orders.
+</ParamField>
+
+<ParamField path="priceImprovementBehavior" type="string" required>
+  How to improve on existing quotes: "dime", "join", or "ignore".
+</ParamField>
+
+## Price improvement strategies
+
+### Dime improvement
+
+Improve by the minimum tick size to get priority.
+
+```typescript
+priceImprovementBehavior: 'dime'
+```
+
+### Join best quote
+
+Match the best existing quote without improving.
+
+```typescript
+priceImprovementBehavior: 'join'
+```
+
+### Ignore existing quotes
+
+Place orders without considering existing quotes.
+
+```typescript
+priceImprovementBehavior: 'ignore'
+```
+
+## Spread configuration
+
+Configure the spread between bid and ask orders.
+
+```typescript
+// Tight spread (0.1%)
+quoteEdgeInBps: 10
+
+// Medium spread (0.3%)
+quoteEdgeInBps: 30
+
+// Wide spread (1%)
+quoteEdgeInBps: 100
+```
+
+## Position sizing
+
+Set the size of each quote in quote token atoms.
+
+```typescript
+// Small positions
+quoteSizeInQuoteAtoms: 100_000_000
+
+// Medium positions
+quoteSizeInQuoteAtoms: 1_000_000_000
+
+// Large positions
+quoteSizeInQuoteAtoms: 10_000_000_000
+```
+
+## Post-only mode
+
+Enable post-only mode to ensure orders are always maker orders.
+
+```typescript
+postOnly: true  // Only place maker orders
+postOnly: false // Allow taker orders
+```
+
+## Example configurations
+
+### Conservative market maker
+
+Tight spreads with small positions.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 10,
+  quoteSizeInQuoteAtoms: 100_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime',
+};
+```
+
+### Aggressive market maker
+
+Wide spreads with large positions.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 100,
+  quoteSizeInQuoteAtoms: 10_000_000_000,
+  postOnly: false,
+  priceImprovementBehavior: 'join',
+};
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent integration" icon="robot" href="/phoenix-dex/agent-integration">
+  Deploy an agent as a market maker.
+</Card>
+
+<Card title="Performance monitoring" icon="chart-area" href="/phoenix-dex/monitoring">
+  Track market maker performance.
+</Card>
+
+</CardGroup>
