@@ -62,6 +62,12 @@
               "crossmint/collections",
               "crossmint/metadata"
             ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples"
+            ]
           }
         ]
       },
