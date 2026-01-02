@@ -1,0 +1,165 @@
+---
+title: "Agent creation"
+description: "Create autonomous trading agents with custom capabilities"
+---
+
+Create AI-powered trading agents that execute strategies autonomously on Solana. Configure capabilities, autonomy levels, and risk parameters to match your trading goals.
+
+## Create a basic agent
+
+Deploy a simple trading agent with default settings.
+
+```typescript
+const agent = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Alpha Trader',
+  description: 'AI-powered arbitrage agent',
+  autonomyLevel: 'high',
+  capabilities: ['arbitrage', 'market_making'],
+});
+
+console.log('Agent ID:', agent.agentId.toBase58());
+console.log('Agent status:', agent.status);
+```
+
+## Create agent with token
+
+Create an agent and launch a token simultaneously.
+
+```typescript
+const { agent, tokenMint } = await sdk.agent.createAgentWithToken(
+  creator.publicKey,
+  {
+    name: 'DeFi Master',
+    description: 'Yield optimization specialist',
+    autonomyLevel: 'high',
+    tokenSymbol: 'DEFI',
+    tokenSupply: 1_000_000,
+    capabilities: ['yield_farming', 'auto_compound'],
+  }
+);
+
+console.log('Agent ID:', agent.agentId.toBase58());
+console.log('Token Mint:', tokenMint.toBase58());
+```
+
+## Parameters
+
+<ParamField path="creator" type="PublicKey" required>
+  The wallet address that will own the agent.
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The name of the agent (e.g., "Alpha Trader").
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  A description of the agent's purpose and capabilities.
+</ParamField>
+
+<ParamField path="autonomyLevel" type="string" required>
+  The level of autonomy: "low", "medium", or "high".
+</ParamField>
+
+<ParamField path="capabilities" type="string[]" required>
+  An array of capabilities the agent should have.
+</ParamField>
+
+<ParamField path="tokenSymbol" type="string">
+  The token symbol (only for createAgentWithToken).
+</ParamField>
+
+<ParamField path="tokenSupply" type="number">
+  The token supply (only for createAgentWithToken).
+</ParamField>
+
+## Agent capabilities
+
+Configure your agent with specific trading capabilities.
+
+### Arbitrage
+
+Exploit price differences across DEXes.
+
+```typescript
+capabilities: ['arbitrage']
+```
+
+### Market making
+
+Provide liquidity and earn spreads.
+
+```typescript
+capabilities: ['market_making']
+```
+
+### Yield farming
+
+Optimize yield across protocols.
+
+```typescript
+capabilities: ['yield_farming']
+```
+
+### Auto compound
+
+Automatically compound rewards.
+
+```typescript
+capabilities: ['auto_compound']
+```
+
+### Risk management
+
+Monitor and manage portfolio risk.
+
+```typescript
+capabilities: ['risk_management']
+```
+
+## Autonomy levels
+
+### Low autonomy
+
+Manual approval required for all actions.
+
+```typescript
+autonomyLevel: 'low'
+```
+
+### Medium autonomy
+
+Automatic execution within predefined limits.
+
+```typescript
+autonomyLevel: 'medium'
+```
+
+### High autonomy
+
+Full autonomy with risk management guardrails.
+
+```typescript
+autonomyLevel: 'high'
+```
+
+## Agent status
+
+After creation, agents can have the following statuses:
+
+- **Active** - Agent is running and executing strategies
+- **Paused** - Agent is temporarily stopped
+- **Stopped** - Agent is permanently stopped
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Deploy strategies" icon="chess" href="/agents/strategies">
+  Configure trading strategies for your agent.
+</Card>
+
+<Card title="Tokenize agent" icon="gem" href="/agents/tokenization">
+  Convert your agent into a tradeable NFT.
+</Card>
+
+</CardGroup>
