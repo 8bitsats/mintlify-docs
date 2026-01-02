@@ -1,0 +1,130 @@
+---
+title: "Trading"
+description: "Buy and sell tokens with slippage protection"
+---
+
+Execute trades on FunPump bonding curves with built-in slippage protection and optimal routing. The SDK handles all the complexity of calculating prices, managing slippage, and executing transactions.
+
+## Buy tokens
+
+Purchase tokens from a bonding curve with SOL.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+
+const buyIx = await sdk.core.buyTokens({
+  buyer: wallet.publicKey,
+  tokenMint,
+  solAmount: new BN(0.1 * 1e9), // 0.1 SOL
+  slippageBps: 100, // 1% slippage
+});
+
+const tx = new Transaction().add(buyIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Sell tokens
+
+Sell tokens back to the bonding curve for SOL.
+
+```typescript
+const sellIx = await sdk.core.sellTokens({
+  seller: wallet.publicKey,
+  tokenMint,
+  tokenAmount: new BN(100_000 * 1e9), // 100k tokens
+  slippageBps: 100, // 1% slippage
+});
+
+const tx = new Transaction().add(sellIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Parameters
+
+### Buy tokens
+
+<ParamField path="buyer" type="PublicKey" required>
+  The wallet address buying the tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="solAmount" type="BN" required>
+  The amount of SOL to spend (in lamports).
+</ParamField>
+
+<ParamField path="slippageBps" type="number" required>
+  The maximum slippage in basis points (100 = 1%).
+</ParamField>
+
+### Sell tokens
+
+<ParamField path="seller" type="PublicKey" required>
+  The wallet address selling the tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="tokenAmount" type="BN" required>
+  The amount of tokens to sell (in base units).
+</ParamField>
+
+<ParamField path="slippageBps" type="number" required>
+  The maximum slippage in basis points (100 = 1%).
+</ParamField>
+
+## Calculate prices
+
+Get the current buy or sell price before executing a trade.
+
+```typescript
+// Calculate buy price
+const buyPrice = await sdk.core.calculateBuyPrice(
+  tokenMint,
+  new BN(100_000 * 1e9) // 100k tokens
+);
+
+console.log('Buy price:', buyPrice.toString(), 'lamports');
+
+// Calculate sell price
+const sellPrice = await sdk.core.calculateSellPrice(
+  tokenMint,
+  new BN(100_000 * 1e9) // 100k tokens
+);
+
+console.log('Sell price:', sellPrice.toString(), 'lamports');
+```
+
+## Slippage protection
+
+Slippage is specified in basis points (bps), where 100 bps = 1%.
+
+```typescript
+slippageBps: 50   // 0.5% slippage
+slippageBps: 100  // 1% slippage
+slippageBps: 500  // 5% slippage
+```
+
+The transaction will fail if the price moves beyond the specified slippage tolerance.
+
+## MEV protection
+
+The SDK includes built-in MEV protection to prevent front-running and sandwich attacks. Transactions are routed through protected RPC endpoints when available.
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Bonding curves" icon="chart-area" href="/core-protocol/bonding-curves">
+  Learn how bonding curves calculate prices.
+</Card>
+
+<Card title="Token vaults" icon="vault" href="/core-protocol/vaults">
+  Lock tokens with time-based release schedules.
+</Card>
+
+</CardGroup>
