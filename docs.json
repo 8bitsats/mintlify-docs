@@ -9,94 +9,79 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
+    "pages": [
+      "index",
+      "quickstart",
+      "development"
+    ],
+    "groups": [
       {
-        "tab": "Documentation",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Core protocol",
-            "pages": [
-              "core-protocol/overview",
-              "core-protocol/token-launch",
-              "core-protocol/trading",
-              "core-protocol/bonding-curves",
-              "core-protocol/vaults",
-              "core-protocol/vesting",
-              "core-protocol/friend-accounts"
-            ]
-          },
-          {
-            "group": "Agents",
-            "pages": [
-              "agents/overview",
-              "agents/creation",
-              "agents/strategies",
-              "agents/tokenization",
-              "agents/coordination"
-            ]
-          },
-          {
-            "group": "Phoenix DEX",
-            "pages": [
-              "phoenix-dex/overview",
-              "phoenix-dex/market-maker",
-              "phoenix-dex/agent-integration",
-              "phoenix-dex/strategies",
-              "phoenix-dex/monitoring"
-            ]
-          },
-          {
-            "group": "Crossmint",
-            "pages": [
-              "crossmint/overview",
-              "crossmint/agent-nfts",
-              "crossmint/token-minting",
-              "crossmint/collections",
-              "crossmint/metadata"
-            ]
-          },
-          {
-            "group": "Examples",
-            "pages": [
-              "examples"
-            ]
-          }
+        "group": "Core protocol",
+        "pages": [
+          "core-protocol/overview",
+          "core-protocol/token-launch",
+          "core-protocol/trading",
+          "core-protocol/bonding-curves",
+          "core-protocol/vaults",
+          "core-protocol/vesting",
+          "core-protocol/friend-accounts"
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
+        "group": "Agents",
+        "pages": [
+          "agents/overview",
+          "agents/creation",
+          "agents/strategies",
+          "agents/tokenization",
+          "agents/coordination"
+        ]
+      },
+      {
+        "group": "Phoenix DEX",
+        "pages": [
+          "phoenix-dex/overview",
+          "phoenix-dex/market-maker",
+          "phoenix-dex/agent-integration",
+          "phoenix-dex/strategies",
+          "phoenix-dex/monitoring"
+        ]
+      },
+      {
+        "group": "Crossmint",
+        "pages": [
+          "crossmint/overview",
+          "crossmint/agent-nfts",
+          "crossmint/token-minting",
+          "crossmint/collections",
+          "crossmint/metadata"
+        ]
+      },
+      {
+        "group": "Examples",
+        "pages": [
+          "examples"
+        ]
+      },
+      {
+        "group": "API reference",
+        "pages": [
+          "api-reference/introduction"
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Discord",
-          "href": "https://discord.gg/funpump",
-          "icon": "discord"
-        },
-        {
-          "anchor": "Twitter",
-          "href": "https://twitter.com/funpump",
-          "icon": "twitter"
-        }
-      ]
-    }
+    "anchors": [
+      {
+        "anchor": "Discord",
+        "href": "https://discord.gg/funpump",
+        "icon": "discord"
+      },
+      {
+        "anchor": "Twitter",
+        "href": "https://twitter.com/funpump",
+        "icon": "twitter"
+      }
+    ]
   },
   "logo": {
     "light": "/logo/ChatGPT Image Jan 1, 2026, 01_01_23 PM.png",
