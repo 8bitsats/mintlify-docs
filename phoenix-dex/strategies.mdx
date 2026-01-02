@@ -1,0 +1,156 @@
+---
+title: "Price strategies"
+description: "Configure price improvement and quoting strategies"
+---
+
+Optimize your market making performance with advanced price strategies. Configure how your market maker quotes prices, improves on existing orders, and responds to market conditions.
+
+## Price improvement behaviors
+
+### Dime improvement
+
+Improve by the minimum tick size to get priority over existing orders.
+
+```typescript
+priceImprovementBehavior: 'dime'
+```
+
+This strategy places your orders one tick better than the best existing quote, giving you priority in the order book.
+
+### Join best quote
+
+Match the best existing quote without improving.
+
+```typescript
+priceImprovementBehavior: 'join'
+```
+
+This strategy matches the best existing quote, sharing priority with other orders at that price level.
+
+### Ignore existing quotes
+
+Place orders without considering existing quotes.
+
+```typescript
+priceImprovementBehavior: 'ignore'
+```
+
+This strategy places orders at your configured spread regardless of existing quotes.
+
+## Dynamic spread adjustment
+
+Automatically adjust spreads based on market conditions.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30, // Base spread
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime',
+  dynamicSpreads: true,
+  minSpreadBps: 15, // Minimum spread
+  maxSpreadBps: 60, // Maximum spread
+  volatilityMultiplier: 1.5, // Widen spreads during volatility
+};
+```
+
+## Inventory-based pricing
+
+Adjust quotes based on current inventory levels.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30,
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'join',
+  inventorySkew: true,
+  inventoryTarget: 50, // Target 50% inventory
+  skewMultiplier: 0.5, // Skew quotes by 0.5% per 10% deviation
+};
+```
+
+## Adverse selection protection
+
+Protect against adverse selection with smart quoting.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30,
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime',
+  adverseSelectionProtection: true,
+  minTimeInBook: 100, // Minimum time in book (ms)
+  cancelOnTrade: true, // Cancel opposite side on trade
+};
+```
+
+## Strategy examples
+
+### Conservative strategy
+
+Tight spreads with frequent requoting.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 15,
+  quoteSizeInQuoteAtoms: 500_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime',
+  dynamicSpreads: false,
+  requoteInterval: 1000, // Requote every second
+};
+```
+
+### Aggressive strategy
+
+Wide spreads with large positions.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 50,
+  quoteSizeInQuoteAtoms: 5_000_000_000,
+  postOnly: false,
+  priceImprovementBehavior: 'join',
+  dynamicSpreads: true,
+  minSpreadBps: 30,
+  maxSpreadBps: 100,
+};
+```
+
+### Balanced strategy
+
+Medium spreads with inventory management.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 25,
+  quoteSizeInQuoteAtoms: 2_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime',
+  inventorySkew: true,
+  inventoryTarget: 50,
+  skewMultiplier: 0.3,
+};
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Market maker setup" icon="chart-line" href="/phoenix-dex/market-maker">
+  Initialize your market maker.
+</Card>
+
+<Card title="Performance monitoring" icon="chart-area" href="/phoenix-dex/monitoring">
+  Track strategy performance.
+</Card>
+
+</CardGroup>
