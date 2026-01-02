@@ -1,0 +1,190 @@
+---
+title: "Metadata management"
+description: "Configure NFT metadata and attributes"
+---
+
+Manage NFT metadata to control how your agent NFTs and tokens are displayed in wallets, marketplaces, and applications. Configure attributes, images, and other properties.
+
+## NFT metadata structure
+
+NFT metadata follows the Metaplex standard.
+
+```json
+{
+  "name": "My Trading Agent",
+  "description": "AI-powered arbitrage agent",
+  "image": "https://arweave.net/agent-image.png",
+  "external_url": "https://funpump.io/agent/123",
+  "attributes": [
+    {
+      "trait_type": "Autonomy Level",
+      "value": "High"
+    },
+    {
+      "trait_type": "Capabilities",
+      "value": "Arbitrage, Market Making"
+    },
+    {
+      "trait_type": "Total Trades",
+      "value": "1,234"
+    }
+  ],
+  "properties": {
+    "category": "agent",
+    "creators": [
+      {
+        "address": "wallet_address",
+        "share": 100
+      }
+    ]
+  }
+}
+```
+
+## Upload metadata
+
+Upload metadata to Arweave or IPFS.
+
+```typescript
+const metadata = {
+  name: 'My Trading Agent',
+  description: 'AI-powered arbitrage agent',
+  image: await sdk.crossmint?.uploadImage('path/to/image.png'),
+  attributes: [
+    { trait_type: 'Autonomy Level', value: 'High' },
+    { trait_type: 'Capabilities', value: 'Arbitrage' },
+  ],
+};
+
+const uri = await sdk.crossmint?.uploadMetadata(metadata);
+console.log('Metadata URI:', uri);
+```
+
+## Update metadata
+
+Update existing NFT metadata.
+
+```typescript
+await sdk.crossmint?.updateMetadata(
+  nft.onChain.mintAddress,
+  {
+    description: 'Updated description',
+    attributes: [
+      { trait_type: 'Total Trades', value: '2,500' },
+      { trait_type: 'Win Rate', value: '82%' },
+    ],
+  }
+);
+```
+
+## Attribute types
+
+### Text attributes
+
+Simple text values.
+
+```typescript
+{ trait_type: 'Strategy', value: 'Arbitrage' }
+```
+
+### Numeric attributes
+
+Numeric values with optional display type.
+
+```typescript
+{
+  trait_type: 'Win Rate',
+  value: 82,
+  display_type: 'percentage'
+}
+```
+
+### Date attributes
+
+Timestamp values.
+
+```typescript
+{
+  trait_type: 'Created',
+  value: 1640995200,
+  display_type: 'date'
+}
+```
+
+### Boost attributes
+
+Numeric boosts for gaming applications.
+
+```typescript
+{
+  trait_type: 'Power',
+  value: 10,
+  display_type: 'boost_number'
+}
+```
+
+## Image management
+
+### Upload image
+
+Upload an image to Arweave.
+
+```typescript
+const imageUrl = await sdk.crossmint?.uploadImage('path/to/image.png');
+console.log('Image URL:', imageUrl);
+```
+
+### Generate image
+
+Generate an image from agent data.
+
+```typescript
+const imageUrl = await sdk.crossmint?.generateAgentImage(agent.agentId, {
+  template: 'default',
+  backgroundColor: '#1a1a1a',
+  includeStats: true,
+});
+```
+
+## Metadata validation
+
+Validate metadata before uploading.
+
+```typescript
+const isValid = await sdk.crossmint?.validateMetadata(metadata);
+
+if (!isValid.valid) {
+  console.error('Validation errors:', isValid.errors);
+}
+```
+
+## Batch metadata updates
+
+Update metadata for multiple NFTs.
+
+```typescript
+await sdk.crossmint?.batchUpdateMetadata([
+  {
+    mintAddress: nft1.mintAddress,
+    metadata: { attributes: [{ trait_type: 'Status', value: 'Active' }] },
+  },
+  {
+    mintAddress: nft2.mintAddress,
+    metadata: { attributes: [{ trait_type: 'Status', value: 'Paused' }] },
+  },
+]);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent NFTs" icon="robot" href="/crossmint/agent-nfts">
+  Create agent NFTs with custom metadata.
+</Card>
+
+<Card title="Collection management" icon="layer-group" href="/crossmint/collections">
+  Organize NFTs into collections.
+</Card>
+
+</CardGroup>
