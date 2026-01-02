@@ -1,0 +1,148 @@
+---
+title: "Collection management"
+description: "Create and manage NFT collections"
+---
+
+Organize your agent NFTs and tokens into collections for better discoverability and management. Collections provide a unified brand identity and enable collection-level features.
+
+## Create collection
+
+Create a new NFT collection.
+
+```typescript
+const collection = await sdk.crossmint?.createCollection({
+  name: 'FunPump Agents',
+  description: 'A collection of autonomous trading agents',
+  symbol: 'FPAGENT',
+  image: 'https://arweave.net/collection-image.png',
+  externalUrl: 'https://funpump.io/agents',
+});
+
+console.log('Collection ID:', collection.id);
+console.log('Collection address:', collection.address);
+```
+
+## Parameters
+
+<ParamField path="name" type="string" required>
+  The name of the collection.
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  A description of the collection.
+</ParamField>
+
+<ParamField path="symbol" type="string" required>
+  The collection symbol.
+</ParamField>
+
+<ParamField path="image" type="string" required>
+  The collection image URL.
+</ParamField>
+
+<ParamField path="externalUrl" type="string">
+  An external URL for the collection.
+</ParamField>
+
+## Add NFT to collection
+
+Add an agent NFT to a collection.
+
+```typescript
+await sdk.crossmint?.addToCollection(
+  collection.id,
+  nft.onChain.mintAddress
+);
+
+console.log('NFT added to collection');
+```
+
+## Collection metadata
+
+Configure collection-level metadata.
+
+```typescript
+const collection = await sdk.crossmint?.createCollection({
+  name: 'Elite Trading Agents',
+  description: 'High-performance autonomous trading agents',
+  symbol: 'ELITE',
+  image: 'https://arweave.net/elite-collection.png',
+  externalUrl: 'https://funpump.io/elite',
+  attributes: [
+    { trait_type: 'Category', value: 'Trading Agents' },
+    { trait_type: 'Network', value: 'Solana' },
+    { trait_type: 'Total Agents', value: '100' },
+  ],
+  royalties: {
+    percentage: 5, // 5% royalties
+    recipient: wallet.publicKey.toBase58(),
+  },
+});
+```
+
+## Query collection
+
+Retrieve information about a collection.
+
+```typescript
+const collectionInfo = await sdk.crossmint?.getCollection(collection.id);
+
+console.log('Name:', collectionInfo.name);
+console.log('Total items:', collectionInfo.itemCount);
+console.log('Floor price:', collectionInfo.floorPrice);
+console.log('Total volume:', collectionInfo.totalVolume);
+```
+
+## List collection items
+
+Get all NFTs in a collection.
+
+```typescript
+const items = await sdk.crossmint?.getCollectionItems(collection.id);
+
+items.forEach((item) => {
+  console.log('NFT:', item.name);
+  console.log('Mint:', item.mintAddress);
+  console.log('Owner:', item.owner);
+});
+```
+
+## Update collection
+
+Update collection metadata.
+
+```typescript
+await sdk.crossmint?.updateCollection(collection.id, {
+  description: 'Updated description',
+  image: 'https://arweave.net/new-image.png',
+  attributes: [
+    { trait_type: 'Total Agents', value: '150' },
+  ],
+});
+```
+
+## Collection royalties
+
+Configure royalties for secondary sales.
+
+```typescript
+await sdk.crossmint?.setCollectionRoyalties(collection.id, {
+  percentage: 7.5, // 7.5% royalties
+  recipient: wallet.publicKey.toBase58(),
+  enforceable: true,
+});
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent NFTs" icon="robot" href="/crossmint/agent-nfts">
+  Create agent NFTs for your collection.
+</Card>
+
+<Card title="Metadata management" icon="file-code" href="/crossmint/metadata">
+  Configure NFT metadata.
+</Card>
+
+</CardGroup>
