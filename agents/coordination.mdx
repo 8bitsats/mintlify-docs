@@ -1,0 +1,155 @@
+---
+title: "Multi-agent coordination"
+description: "Coordinate multiple agents for complex trading strategies"
+---
+
+Coordinate multiple agents to execute complex trading strategies that require collaboration. Agents can share information, coordinate actions, and optimize portfolio-level outcomes.
+
+## Create agent swarm
+
+Deploy multiple agents that work together.
+
+```typescript
+// Create multiple agents with complementary strategies
+const arbitrageAgent = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Arbitrage Specialist',
+  description: 'Focuses on cross-DEX arbitrage',
+  autonomyLevel: 'high',
+  capabilities: ['arbitrage'],
+});
+
+const marketMaker = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Market Maker',
+  description: 'Provides liquidity on Phoenix',
+  autonomyLevel: 'high',
+  capabilities: ['market_making'],
+});
+
+const yieldFarmer = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Yield Optimizer',
+  description: 'Maximizes yield across protocols',
+  autonomyLevel: 'high',
+  capabilities: ['yield_farming'],
+});
+```
+
+## Coordinate agents
+
+Configure agents to share information and coordinate actions.
+
+```typescript
+// Create coordination group
+const swarm = await sdk.agent.createSwarm({
+  name: 'Alpha Swarm',
+  agents: [
+    arbitrageAgent.agentId,
+    marketMaker.agentId,
+    yieldFarmer.agentId,
+  ],
+  coordinationStrategy: 'portfolio_optimization',
+});
+
+console.log('Swarm created:', swarm.swarmId);
+```
+
+## Coordination strategies
+
+### Portfolio optimization
+
+Optimize portfolio-level returns across all agents.
+
+```typescript
+coordinationStrategy: 'portfolio_optimization'
+```
+
+### Risk balancing
+
+Balance risk across agents to maintain target exposure.
+
+```typescript
+coordinationStrategy: 'risk_balancing'
+```
+
+### Information sharing
+
+Share market data and signals between agents.
+
+```typescript
+coordinationStrategy: 'information_sharing'
+```
+
+## Use cases
+
+### Diversified trading
+
+Deploy agents with different strategies for diversification.
+
+```typescript
+const swarm = await sdk.agent.createSwarm({
+  name: 'Diversified Portfolio',
+  agents: [
+    arbitrageAgent.agentId,
+    marketMaker.agentId,
+    yieldFarmer.agentId,
+  ],
+  coordinationStrategy: 'portfolio_optimization',
+});
+```
+
+### Market making network
+
+Coordinate market makers across multiple markets.
+
+```typescript
+const mmNetwork = await sdk.agent.createSwarm({
+  name: 'Market Making Network',
+  agents: [
+    phoenixMM.agentId,
+    raydiumMM.agentId,
+    orcaMM.agentId,
+  ],
+  coordinationStrategy: 'information_sharing',
+});
+```
+
+### Risk-managed portfolio
+
+Balance risk across multiple strategies.
+
+```typescript
+const riskManagedPortfolio = await sdk.agent.createSwarm({
+  name: 'Risk-Managed Portfolio',
+  agents: [
+    conservativeAgent.agentId,
+    moderateAgent.agentId,
+    aggressiveAgent.agentId,
+  ],
+  coordinationStrategy: 'risk_balancing',
+});
+```
+
+## Monitor swarm performance
+
+Track the performance of your agent swarm.
+
+```typescript
+const performance = await sdk.agent.getSwarmPerformance(swarm.swarmId);
+
+console.log('Total PnL:', performance.totalPnL);
+console.log('Win Rate:', performance.winRate);
+console.log('Sharpe Ratio:', performance.sharpeRatio);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent creation" icon="robot" href="/agents/creation">
+  Create agents for your swarm.
+</Card>
+
+<Card title="Deploy strategies" icon="chess" href="/agents/strategies">
+  Configure strategies for each agent.
+</Card>
+
+</CardGroup>
