@@ -1,0 +1,85 @@
+---
+title: "Core protocol overview"
+description: "Complete token launch platform with bonding curves, vaults, and vesting"
+---
+
+The FunPump Core protocol provides a comprehensive suite of tools for launching and managing tokens on Solana. Build sophisticated token economies with bonding curves, time-locked vaults, and market cap-based vesting schedules.
+
+## Key features
+
+<CardGroup cols={2}>
+
+<Card title="Token launches" icon="rocket" href="/core-protocol/token-launch">
+  Launch tokens with customizable bonding curves and initial liquidity.
+</Card>
+
+<Card title="Bonding curves" icon="chart-area" href="/core-protocol/bonding-curves">
+  Create constant product or linear bonding curves for price discovery.
+</Card>
+
+<Card title="Token vaults" icon="vault" href="/core-protocol/vaults">
+  Lock tokens with time-based release schedules.
+</Card>
+
+<Card title="Vesting schedules" icon="calendar-clock" href="/core-protocol/vesting">
+  Implement market cap-based vesting for team tokens.
+</Card>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Buy and sell tokens with slippage protection.
+</Card>
+
+<Card title="Friend accounts" icon="users" href="/core-protocol/friend-accounts">
+  Coordinate group launches with shared funding.
+</Card>
+
+</CardGroup>
+
+## Quick example
+
+Launch a token with a bonding curve in just a few lines of code.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+import { LaunchPlatform, CurveType } from '@funpump/sdk';
+
+const { instruction, tokenMint } = await sdk.core.launchToken({
+  creator: wallet.publicKey,
+  name: 'My Token',
+  symbol: 'MTK',
+  uri: 'https://arweave.net/metadata',
+  decimals: 9,
+  supply: new BN(1_000_000_000).mul(new BN(10).pow(new BN(9))),
+  initialSolReserves: new BN(1).mul(new BN(10).pow(new BN(9))),
+  platform: LaunchPlatform.FunPump,
+  curve: CurveType.ConstantProduct,
+});
+```
+
+## Supported platforms
+
+The SDK supports multiple launch platforms:
+
+- **FunPump** - Native FunPump protocol with full feature support
+- **PumpFun** - Integration with Pump.fun for broader compatibility
+
+## Curve types
+
+Choose from multiple bonding curve implementations:
+
+- **Constant Product** - x * y = k curve for stable price discovery
+- **Linear** - Linear price progression for predictable pricing
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Launch a token" icon="rocket" href="/core-protocol/token-launch">
+  Create your first token with a bonding curve.
+</Card>
+
+<Card title="Trading operations" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+</CardGroup>
