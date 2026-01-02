@@ -1,0 +1,75 @@
+---
+title: "Agent overview"
+description: "Deploy autonomous AI trading agents on Solana"
+---
+
+FunPump agents are autonomous AI-powered trading systems that execute strategies on Solana. Deploy agents with custom capabilities, tokenize them as NFTs, and coordinate multiple agents for complex trading strategies.
+
+## Key features
+
+<CardGroup cols={2}>
+
+<Card title="Agent creation" icon="robot" href="/agents/creation">
+  Create autonomous trading agents with custom capabilities.
+</Card>
+
+<Card title="Strategy deployment" icon="chess" href="/agents/strategies">
+  Deploy and manage trading strategies for your agents.
+</Card>
+
+<Card title="Agent tokenization" icon="gem" href="/agents/tokenization">
+  Convert agents into tradeable NFTs.
+</Card>
+
+<Card title="Multi-agent coordination" icon="users" href="/agents/coordination">
+  Coordinate multiple agents for complex strategies.
+</Card>
+
+</CardGroup>
+
+## Quick example
+
+Create an autonomous trading agent in just a few lines of code.
+
+```typescript
+const agent = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Alpha Trader',
+  description: 'AI-powered arbitrage agent',
+  autonomyLevel: 'high',
+  capabilities: ['arbitrage', 'market_making'],
+});
+
+console.log('Agent created:', agent.agentId.toBase58());
+```
+
+## Agent capabilities
+
+Agents can be configured with various capabilities:
+
+- **Arbitrage** - Exploit price differences across DEXes
+- **Market making** - Provide liquidity and earn spreads
+- **Yield farming** - Optimize yield across protocols
+- **Auto compound** - Automatically compound rewards
+- **Risk management** - Monitor and manage portfolio risk
+
+## Autonomy levels
+
+Choose the level of autonomy for your agent:
+
+- **Low** - Manual approval required for all actions
+- **Medium** - Automatic execution within predefined limits
+- **High** - Full autonomy with risk management guardrails
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Create an agent" icon="robot" href="/agents/creation">
+  Deploy your first autonomous trading agent.
+</Card>
+
+<Card title="Deploy strategies" icon="chess" href="/agents/strategies">
+  Configure trading strategies for your agent.
+</Card>
+
+</CardGroup>
