@@ -1,0 +1,221 @@
+---
+title: "Strategy deployment"
+description: "Deploy and manage trading strategies for your agents"
+---
+
+Configure trading strategies for your agents to execute autonomously. Create custom strategies with specific parameters, risk levels, and expected returns.
+
+## Create a custom strategy
+
+Define a trading strategy with specific actions and parameters.
+
+```typescript
+const strategy = await sdk.agent.createCustomStrategy({
+  name: 'Volatility Arbitrage',
+  description: 'Exploit price differences during volatility',
+  riskLevel: 'medium',
+  expectedAPY: 45,
+  actions: [
+    {
+      actionType: 'arbitrage',
+      parameters: {
+        minSpreadBps: 50,
+        maxPositionSize: 1000,
+        dexes: ['phoenix', 'raydium', 'orca'],
+      },
+    },
+  ],
+});
+
+console.log('Strategy ID:', strategy.strategyId);
+```
+
+## Deploy strategy to agent
+
+Attach a strategy to an agent for execution.
+
+```typescript
+await sdk.agent.deployStrategy(agent.agentId, strategy);
+
+console.log('Strategy deployed to agent:', agent.agentId.toBase58());
+```
+
+## Strategy parameters
+
+<ParamField path="name" type="string" required>
+  The name of the strategy.
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  A description of the strategy's approach.
+</ParamField>
+
+<ParamField path="riskLevel" type="string" required>
+  The risk level: "low", "medium", or "high".
+</ParamField>
+
+<ParamField path="expectedAPY" type="number" required>
+  The expected annual percentage yield.
+</ParamField>
+
+<ParamField path="actions" type="Action[]" required>
+  An array of actions the strategy will execute.
+</ParamField>
+
+## Action types
+
+### Arbitrage
+
+Exploit price differences across DEXes.
+
+```typescript
+{
+  actionType: 'arbitrage',
+  parameters: {
+    minSpreadBps: 50,        // Minimum spread in basis points
+    maxPositionSize: 1000,   // Maximum position size in tokens
+    dexes: ['phoenix', 'raydium', 'orca'],
+  },
+}
+```
+
+### Market making
+
+Provide liquidity and earn spreads.
+
+```typescript
+{
+  actionType: 'market_making',
+  parameters: {
+    spreadBps: 30,           // Spread in basis points
+    inventoryTarget: 50,     // Target inventory percentage
+    rebalanceThreshold: 10,  // Rebalance threshold percentage
+  },
+}
+```
+
+### Yield farming
+
+Optimize yield across protocols.
+
+```typescript
+{
+  actionType: 'yield_farming',
+  parameters: {
+    minAPY: 20,              // Minimum APY to consider
+    protocols: ['marinade', 'solend', 'tulip'],
+    autoCompound: true,
+  },
+}
+```
+
+## Risk levels
+
+### Low risk
+
+Conservative strategies with minimal exposure.
+
+```typescript
+riskLevel: 'low'
+```
+
+### Medium risk
+
+Balanced strategies with moderate exposure.
+
+```typescript
+riskLevel: 'medium'
+```
+
+### High risk
+
+Aggressive strategies with maximum exposure.
+
+```typescript
+riskLevel: 'high'
+```
+
+## Strategy examples
+
+### Arbitrage strategy
+
+Exploit price differences across multiple DEXes.
+
+```typescript
+const strategy = await sdk.agent.createCustomStrategy({
+  name: 'Multi-DEX Arbitrage',
+  description: 'Arbitrage across Phoenix, Raydium, and Orca',
+  riskLevel: 'medium',
+  expectedAPY: 35,
+  actions: [
+    {
+      actionType: 'arbitrage',
+      parameters: {
+        minSpreadBps: 30,
+        maxPositionSize: 5000,
+        dexes: ['phoenix', 'raydium', 'orca'],
+      },
+    },
+  ],
+});
+```
+
+### Market making strategy
+
+Provide liquidity on Phoenix DEX.
+
+```typescript
+const strategy = await sdk.agent.createCustomStrategy({
+  name: 'Phoenix Market Maker',
+  description: 'Provide liquidity on Phoenix DEX',
+  riskLevel: 'low',
+  expectedAPY: 25,
+  actions: [
+    {
+      actionType: 'market_making',
+      parameters: {
+        spreadBps: 25,
+        inventoryTarget: 50,
+        rebalanceThreshold: 15,
+      },
+    },
+  ],
+});
+```
+
+### Yield farming strategy
+
+Optimize yield across Solana protocols.
+
+```typescript
+const strategy = await sdk.agent.createCustomStrategy({
+  name: 'Yield Optimizer',
+  description: 'Maximize yield across Solana DeFi',
+  riskLevel: 'medium',
+  expectedAPY: 40,
+  actions: [
+    {
+      actionType: 'yield_farming',
+      parameters: {
+        minAPY: 15,
+        protocols: ['marinade', 'solend', 'tulip'],
+        autoCompound: true,
+      },
+    },
+  ],
+});
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent creation" icon="robot" href="/agents/creation">
+  Create an agent to execute your strategies.
+</Card>
+
+<Card title="Multi-agent coordination" icon="users" href="/agents/coordination">
+  Coordinate multiple agents for complex strategies.
+</Card>
+
+</CardGroup>
