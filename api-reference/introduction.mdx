@@ -1,33 +1,138 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API reference'
+description: 'Complete SDK API documentation for FunPump'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+The FunPump SDK provides a comprehensive TypeScript API for building on Solana's most advanced token launch platform. This reference documents all available methods, parameters, and return types.
 
-## Welcome
+## SDK initialization
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+Initialize the SDK with your API key and Solana connection.
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```typescript
+import { Connection, clusterApiUrl } from '@solana/web3.js';
+import { FunPumpSDK } from '@funpump/sdk';
+
+const connection = new Connection(clusterApiUrl('mainnet-beta'));
+
+const sdk = new FunPumpSDK({
+  apiKey: 'your-api-key',
+  connection,
+  commitment: 'confirmed',
+  crossmintApiKey: 'your-crossmint-key', // optional
+  phoenixEnabled: true, // optional
+});
+```
+
+## Configuration
+
+<ParamField path="apiKey" type="string" required>
+  Your FunPump API key.
+</ParamField>
+
+<ParamField path="connection" type="Connection" required>
+  A Solana web3.js Connection instance.
+</ParamField>
+
+<ParamField path="commitment" type="Commitment">
+  The commitment level for transactions (default: "confirmed").
+</ParamField>
+
+<ParamField path="crossmintApiKey" type="string">
+  Your Crossmint API key for NFT minting.
+</ParamField>
+
+<ParamField path="phoenixEnabled" type="boolean">
+  Enable Phoenix DEX integration (default: false).
+</ParamField>
+
+## SDK services
+
+The SDK is organized into the following services:
+
+### Core protocol
+
+Access core protocol features for token launches, bonding curves, vaults, and vesting.
+
+```typescript
+sdk.core.launchToken(...)
+sdk.core.buyTokens(...)
+sdk.core.sellTokens(...)
+sdk.core.getBondingCurve(...)
+```
+
+### Agent management
+
+Create and manage autonomous trading agents.
+
+```typescript
+sdk.agent.createAgent(...)
+sdk.agent.createAgentWithToken(...)
+sdk.agent.deployStrategy(...)
+```
+
+### Phoenix DEX
+
+Integrate Phoenix DEX market making capabilities.
+
+```typescript
+sdk.phoenixMM?.initializeMarketMaker(...)
+sdk.phoenixMM?.deployAgentAsMarketMaker(...)
+```
+
+### Crossmint
+
+Mint NFTs and tokens via Crossmint.
+
+```typescript
+sdk.crossmint?.createAgentNFT(...)
+sdk.crossmint?.mintToken(...)
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API requests require a valid FunPump API key. Get your API key from the [FunPump dashboard](https://funpump.io/dashboard).
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```typescript
+apiKey: 'your-api-key'
 ```
+
+## Error handling
+
+The SDK throws typed errors for common failure cases.
+
+```typescript
+try {
+  await sdk.core.launchToken(...);
+} catch (error) {
+  if (error instanceof InsufficientFundsError) {
+    console.error('Insufficient funds:', error.message);
+  } else if (error instanceof InvalidParameterError) {
+    console.error('Invalid parameter:', error.message);
+  } else {
+    console.error('Unknown error:', error);
+  }
+}
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Core protocol" icon="coins" href="/core-protocol/overview">
+  Explore core protocol methods.
+</Card>
+
+<Card title="Agent management" icon="robot" href="/agents/overview">
+  Learn about agent methods.
+</Card>
+
+<Card title="Phoenix DEX" icon="chart-line" href="/phoenix-dex/overview">
+  Discover Phoenix DEX integration.
+</Card>
+
+<Card title="Crossmint" icon="gem" href="/crossmint/overview">
+  Explore Crossmint methods.
+</Card>
+
+</CardGroup>
