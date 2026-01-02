@@ -1,0 +1,75 @@
+---
+title: "Crossmint overview"
+description: "NFT and token minting via Crossmint integration"
+---
+
+The Crossmint integration enables seamless NFT and token minting for FunPump agents and tokens. Convert agents into tradeable NFTs, create token collections, and manage digital assets.
+
+## Key features
+
+<CardGroup cols={2}>
+
+<Card title="Agent NFTs" icon="robot" href="/crossmint/agent-nfts">
+  Convert agents into tradeable NFTs.
+</Card>
+
+<Card title="Token minting" icon="coins" href="/crossmint/token-minting">
+  Mint tokens via Crossmint's infrastructure.
+</Card>
+
+<Card title="Collection management" icon="layer-group" href="/crossmint/collections">
+  Create and manage NFT collections.
+</Card>
+
+<Card title="Metadata management" icon="file-code" href="/crossmint/metadata">
+  Configure NFT metadata and attributes.
+</Card>
+
+</CardGroup>
+
+## Quick example
+
+Create an agent NFT using Crossmint.
+
+```typescript
+const nft = await sdk.crossmint?.createAgentNFT(
+  agent.agentId,
+  'My Trading Agent',
+  wallet.publicKey.toBase58()
+);
+
+console.log('NFT created:', nft.id);
+console.log('NFT mint:', nft.onChain.mintAddress);
+```
+
+## Crossmint benefits
+
+### Simplified minting
+
+Crossmint handles all the complexity of NFT minting, including metadata upload, token creation, and distribution.
+
+### Cross-chain support
+
+Mint NFTs on multiple blockchains with a single API.
+
+### Fiat payments
+
+Accept fiat payments for NFT purchases via Crossmint's payment infrastructure.
+
+### Custody solutions
+
+Leverage Crossmint's custody solutions for secure asset management.
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Create agent NFTs" icon="robot" href="/crossmint/agent-nfts">
+  Convert agents into tradeable NFTs.
+</Card>
+
+<Card title="Mint tokens" icon="coins" href="/crossmint/token-minting">
+  Mint tokens via Crossmint.
+</Card>
+
+</CardGroup>
