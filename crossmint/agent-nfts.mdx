@@ -1,0 +1,152 @@
+---
+title: "Agent NFTs"
+description: "Convert agents into tradeable NFTs"
+---
+
+Tokenize FunPump agents as NFTs to enable trading, ownership transfer, and fractional ownership. Agent NFTs represent ownership and control of autonomous trading agents.
+
+## Create agent NFT
+
+Convert an agent into a tradeable NFT.
+
+```typescript
+const nft = await sdk.crossmint?.createAgentNFT(
+  agent.agentId,
+  'My Trading Agent',
+  wallet.publicKey.toBase58()
+);
+
+console.log('NFT ID:', nft.id);
+console.log('NFT mint address:', nft.onChain.mintAddress);
+console.log('Metadata URI:', nft.metadata.uri);
+```
+
+## Parameters
+
+<ParamField path="agentId" type="PublicKey" required>
+  The agent ID to tokenize.
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The name of the NFT.
+</ParamField>
+
+<ParamField path="recipient" type="string" required>
+  The wallet address that will receive the NFT.
+</ParamField>
+
+## NFT metadata
+
+Agent NFTs include comprehensive metadata about the agent's capabilities and performance.
+
+```json
+{
+  "name": "My Trading Agent",
+  "description": "AI-powered arbitrage agent",
+  "image": "https://arweave.net/agent-image.png",
+  "attributes": [
+    {
+      "trait_type": "Autonomy Level",
+      "value": "High"
+    },
+    {
+      "trait_type": "Capabilities",
+      "value": "Arbitrage, Market Making"
+    },
+    {
+      "trait_type": "Total Trades",
+      "value": "1,234"
+    },
+    {
+      "trait_type": "Win Rate",
+      "value": "78%"
+    },
+    {
+      "trait_type": "Total PnL",
+      "value": "12.5 SOL"
+    }
+  ]
+}
+```
+
+## Custom metadata
+
+Add custom metadata to your agent NFTs.
+
+```typescript
+const nft = await sdk.crossmint?.createAgentNFT(
+  agent.agentId,
+  'My Trading Agent',
+  wallet.publicKey.toBase58(),
+  {
+    description: 'Elite arbitrage specialist',
+    image: 'https://arweave.net/custom-image.png',
+    attributes: [
+      { trait_type: 'Strategy', value: 'Arbitrage' },
+      { trait_type: 'Risk Level', value: 'Medium' },
+      { trait_type: 'Created', value: new Date().toISOString() },
+    ],
+  }
+);
+```
+
+## Transfer ownership
+
+Transfer agent ownership by transferring the NFT.
+
+```typescript
+import { createTransferInstruction } from '@solana/spl-token';
+
+const transferIx = createTransferInstruction(
+  nftTokenAccount,
+  recipientTokenAccount,
+  wallet.publicKey,
+  1
+);
+
+const tx = new Transaction().add(transferIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Query agent NFT
+
+Retrieve information about an agent NFT.
+
+```typescript
+const nftInfo = await sdk.crossmint?.getAgentNFT(agent.agentId);
+
+console.log('NFT owner:', nftInfo.owner);
+console.log('Mint address:', nftInfo.mintAddress);
+console.log('Metadata:', nftInfo.metadata);
+```
+
+## Update metadata
+
+Update agent NFT metadata to reflect current performance.
+
+```typescript
+await sdk.crossmint?.updateAgentNFTMetadata(
+  agent.agentId,
+  {
+    attributes: [
+      { trait_type: 'Total Trades', value: '2,500' },
+      { trait_type: 'Win Rate', value: '82%' },
+      { trait_type: 'Total PnL', value: '25.3 SOL' },
+    ],
+  }
+);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent creation" icon="robot" href="/agents/creation">
+  Create agents to tokenize.
+</Card>
+
+<Card title="Collection management" icon="layer-group" href="/crossmint/collections">
+  Organize agent NFTs into collections.
+</Card>
+
+</CardGroup>

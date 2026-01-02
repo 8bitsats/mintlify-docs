@@ -1,0 +1,118 @@
+---
+title: "Bonding curves"
+description: "Understand how bonding curves calculate token prices"
+---
+
+Bonding curves provide automated price discovery for tokens without requiring traditional liquidity pools. The FunPump SDK supports multiple curve types for different pricing strategies.
+
+## How bonding curves work
+
+A bonding curve is a mathematical function that determines the price of a token based on its supply. As more tokens are purchased, the price increases along the curve. When tokens are sold, the price decreases.
+
+### Constant product curve
+
+The constant product curve uses the formula `x * y = k`, where:
+- `x` = virtual token reserves
+- `y` = virtual SOL reserves
+- `k` = constant product
+
+This is the same curve used by Uniswap and provides stable price discovery.
+
+```typescript
+curve: CurveType.ConstantProduct
+```
+
+### Linear curve
+
+The linear curve provides predictable price progression with a constant rate of change.
+
+```typescript
+curve: CurveType.Linear
+```
+
+## Query bonding curve state
+
+Get the current state of a bonding curve.
+
+```typescript
+const bondingCurve = await sdk.core.getBondingCurve(tokenMint);
+
+console.log('Virtual Token Reserves:', bondingCurve.virtualTokenReserves.toString());
+console.log('Virtual SOL Reserves:', bondingCurve.virtualSolReserves.toString());
+console.log('Curve Type:', bondingCurve.curveType);
+console.log('Is Completed:', bondingCurve.isCompleted);
+console.log('Migrated to Raydium:', bondingCurve.migratedToRaydium);
+```
+
+## Bonding curve properties
+
+<ParamField path="virtualTokenReserves" type="BN">
+  The virtual token reserves used for price calculation.
+</ParamField>
+
+<ParamField path="virtualSolReserves" type="BN">
+  The virtual SOL reserves used for price calculation.
+</ParamField>
+
+<ParamField path="realTokenReserves" type="BN">
+  The actual token reserves in the curve.
+</ParamField>
+
+<ParamField path="realSolReserves" type="BN">
+  The actual SOL reserves in the curve.
+</ParamField>
+
+<ParamField path="curveType" type="CurveType">
+  The type of bonding curve (ConstantProduct or Linear).
+</ParamField>
+
+<ParamField path="isCompleted" type="boolean">
+  Whether the bonding curve has reached its completion threshold.
+</ParamField>
+
+<ParamField path="migratedToRaydium" type="boolean">
+  Whether the liquidity has been migrated to Raydium.
+</ParamField>
+
+## Calculate prices
+
+Calculate the price for buying or selling tokens.
+
+```typescript
+// Calculate buy price for 100k tokens
+const buyPrice = await sdk.core.calculateBuyPrice(
+  tokenMint,
+  new BN(100_000 * 1e9)
+);
+
+// Calculate sell price for 100k tokens
+const sellPrice = await sdk.core.calculateSellPrice(
+  tokenMint,
+  new BN(100_000 * 1e9)
+);
+```
+
+## Raydium migration
+
+When a bonding curve reaches its completion threshold, the liquidity can be migrated to Raydium for traditional AMM trading.
+
+```typescript
+const migrationIx = await sdk.core.migrateToRaydium(tokenMint);
+
+const tx = new Transaction().add(migrationIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+<Card title="Token launch" icon="rocket" href="/core-protocol/token-launch">
+  Create a token with a bonding curve.
+</Card>
+
+</CardGroup>

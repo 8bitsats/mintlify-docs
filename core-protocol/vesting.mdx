@@ -1,0 +1,192 @@
+---
+title: "Vesting schedules"
+description: "Implement market cap-based vesting for team tokens"
+---
+
+Vesting schedules allow you to distribute tokens over time with market cap-based unlock conditions. This ensures that team members and early contributors are aligned with the project's long-term success.
+
+## Initialize vesting
+
+Create a vesting schedule for a beneficiary.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+
+const vestingIx = await sdk.core.initializeVesting({
+  creator: wallet.publicKey,
+  beneficiary: beneficiaryPubkey,
+  tokenMint,
+  totalAmount: new BN(1_000_000 * 1e9), // 1M tokens
+  startDate: new Date(Date.now() + 86400000), // Start in 24h
+  endDate: new Date(Date.now() + 31536000000), // End in 1 year
+  targetMarketCap: new BN(1_000_000 * 1e9), // $1M market cap requirement
+});
+
+const tx = new Transaction().add(vestingIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Lock tokens for vesting
+
+Transfer tokens to the vesting schedule.
+
+```typescript
+const lockVestingIx = await sdk.core.lockTokensForVesting(
+  wallet.publicKey,
+  beneficiary,
+  tokenMint,
+  new BN(1_000_000 * 1e9) // 1M tokens
+);
+
+const tx = new Transaction().add(lockVestingIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Unlock vested tokens
+
+Beneficiaries can claim vested tokens once conditions are met.
+
+```typescript
+const unlockVestedIx = await sdk.core.unlockVestedTokens(
+  beneficiary,
+  tokenMint,
+  currentMarketCap
+);
+
+const tx = new Transaction().add(unlockVestedIx);
+await sendAndConfirmTransaction(connection, tx, [beneficiary]);
+```
+
+## Parameters
+
+### Initialize vesting
+
+<ParamField path="creator" type="PublicKey" required>
+  The wallet address creating the vesting schedule.
+</ParamField>
+
+<ParamField path="beneficiary" type="PublicKey" required>
+  The wallet address that will receive the vested tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="totalAmount" type="BN" required>
+  The total amount of tokens to vest (in base units).
+</ParamField>
+
+<ParamField path="startDate" type="Date" required>
+  The date when vesting begins.
+</ParamField>
+
+<ParamField path="endDate" type="Date" required>
+  The date when vesting ends.
+</ParamField>
+
+<ParamField path="targetMarketCap" type="BN" required>
+  The market cap requirement for unlocking tokens.
+</ParamField>
+
+### Lock tokens for vesting
+
+<ParamField path="creator" type="PublicKey" required>
+  The wallet address locking the tokens.
+</ParamField>
+
+<ParamField path="beneficiary" type="PublicKey" required>
+  The wallet address that will receive the vested tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="amount" type="BN" required>
+  The amount of tokens to lock (in base units).
+</ParamField>
+
+### Unlock vested tokens
+
+<ParamField path="beneficiary" type="PublicKey" required>
+  The wallet address claiming the vested tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="currentMarketCap" type="BN" required>
+  The current market cap for validation.
+</ParamField>
+
+## Vesting conditions
+
+Tokens vest linearly over time between the start and end dates, but can only be unlocked if the target market cap is reached.
+
+### Time-based vesting
+
+Tokens vest proportionally over the vesting period.
+
+```typescript
+// 1 year vesting period
+startDate: new Date(Date.now())
+endDate: new Date(Date.now() + 31536000000)
+```
+
+### Market cap requirement
+
+Tokens can only be unlocked if the market cap threshold is met.
+
+```typescript
+targetMarketCap: new BN(1_000_000 * 1e9) // $1M market cap
+```
+
+## Use cases
+
+### Team vesting
+
+Vest team tokens over time with market cap milestones.
+
+```typescript
+const vestingIx = await sdk.core.initializeVesting({
+  creator: wallet.publicKey,
+  beneficiary: teamMember.publicKey,
+  tokenMint,
+  totalAmount: new BN(500_000 * 1e9), // 500k tokens
+  startDate: new Date(Date.now()),
+  endDate: new Date(Date.now() + 94608000000), // 3 years
+  targetMarketCap: new BN(5_000_000 * 1e9), // $5M market cap
+});
+```
+
+### Advisor allocations
+
+Vest advisor tokens with shorter periods and lower market cap requirements.
+
+```typescript
+const vestingIx = await sdk.core.initializeVesting({
+  creator: wallet.publicKey,
+  beneficiary: advisor.publicKey,
+  tokenMint,
+  totalAmount: new BN(100_000 * 1e9), // 100k tokens
+  startDate: new Date(Date.now()),
+  endDate: new Date(Date.now() + 31536000000), // 1 year
+  targetMarketCap: new BN(500_000 * 1e9), // $500k market cap
+});
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Token vaults" icon="vault" href="/core-protocol/vaults">
+  Lock tokens with time-based release schedules.
+</Card>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+</CardGroup>

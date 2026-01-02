@@ -1,0 +1,136 @@
+---
+title: "Token vaults"
+description: "Lock tokens with time-based release schedules"
+---
+
+Token vaults allow you to lock tokens for a specified duration, preventing them from being transferred or sold until the lock period expires. This is useful for team tokens, investor allocations, and other time-locked distributions.
+
+## Initialize a vault
+
+Create a vault for a specific token.
+
+```typescript
+const initVaultIx = await sdk.core.initializeVault(
+  wallet.publicKey,
+  tokenMint
+);
+
+const tx = new Transaction().add(initVaultIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Lock tokens
+
+Lock tokens in the vault for a specified duration.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+
+const lockIx = await sdk.core.lockTokens({
+  owner: wallet.publicKey,
+  tokenMint,
+  amount: new BN(50_000 * 1e9), // 50k tokens
+  lockDurationDays: 30, // Lock for 30 days
+});
+
+const tx = new Transaction().add(lockIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Unlock tokens
+
+Unlock tokens after the lock duration expires.
+
+```typescript
+const unlockIx = await sdk.core.unlockTokens(
+  wallet.publicKey,
+  tokenMint
+);
+
+const tx = new Transaction().add(unlockIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Parameters
+
+### Initialize vault
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address that will own the vault.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+### Lock tokens
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address that owns the tokens.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+<ParamField path="amount" type="BN" required>
+  The amount of tokens to lock (in base units).
+</ParamField>
+
+<ParamField path="lockDurationDays" type="number" required>
+  The number of days to lock the tokens.
+</ParamField>
+
+### Unlock tokens
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address that owns the vault.
+</ParamField>
+
+<ParamField path="tokenMint" type="PublicKey" required>
+  The token mint address.
+</ParamField>
+
+## Use cases
+
+### Team tokens
+
+Lock team tokens to prevent early selling and demonstrate long-term commitment.
+
+```typescript
+// Lock team tokens for 1 year
+const lockIx = await sdk.core.lockTokens({
+  owner: teamWallet.publicKey,
+  tokenMint,
+  amount: new BN(10_000_000 * 1e9), // 10M tokens
+  lockDurationDays: 365,
+});
+```
+
+### Investor allocations
+
+Lock investor tokens with staggered release schedules.
+
+```typescript
+// Lock investor tokens for 6 months
+const lockIx = await sdk.core.lockTokens({
+  owner: investorWallet.publicKey,
+  tokenMint,
+  amount: new BN(5_000_000 * 1e9), // 5M tokens
+  lockDurationDays: 180,
+});
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Vesting schedules" icon="calendar-clock" href="/core-protocol/vesting">
+  Implement market cap-based vesting.
+</Card>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+</CardGroup>

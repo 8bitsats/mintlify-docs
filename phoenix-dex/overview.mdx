@@ -1,0 +1,83 @@
+---
+title: "Phoenix DEX overview"
+description: "Professional-grade market making on Phoenix DEX"
+---
+
+The Phoenix DEX integration enables professional market making capabilities for FunPump agents. Deploy market makers with customizable spreads, position sizes, and price improvement strategies.
+
+## Key features
+
+<CardGroup cols={2}>
+
+<Card title="Market maker setup" icon="chart-line" href="/phoenix-dex/market-maker">
+  Initialize and configure market makers on Phoenix.
+</Card>
+
+<Card title="Agent integration" icon="robot" href="/phoenix-dex/agent-integration">
+  Deploy agents as market makers on Phoenix DEX.
+</Card>
+
+<Card title="Price strategies" icon="chart-mixed" href="/phoenix-dex/strategies">
+  Configure price improvement and quoting strategies.
+</Card>
+
+<Card title="Performance monitoring" icon="chart-area" href="/phoenix-dex/monitoring">
+  Track market maker performance and metrics.
+</Card>
+
+</CardGroup>
+
+## Quick example
+
+Initialize a market maker on Phoenix DEX.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30, // 0.3% spread
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime' as const,
+};
+
+const tx = await sdk.phoenixMM?.initializeMarketMaker(
+  trader.publicKey,
+  config
+);
+```
+
+## Market making strategies
+
+### Post-only orders
+
+Ensure orders are always maker orders.
+
+```typescript
+postOnly: true
+```
+
+### Price improvement
+
+Choose how to improve on existing quotes:
+
+- **Dime** - Improve by the minimum tick size
+- **Join** - Match the best existing quote
+- **Ignore** - Don't consider existing quotes
+
+```typescript
+priceImprovementBehavior: 'dime'
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Set up market maker" icon="chart-line" href="/phoenix-dex/market-maker">
+  Initialize your first market maker.
+</Card>
+
+<Card title="Deploy agent" icon="robot" href="/phoenix-dex/agent-integration">
+  Deploy an agent as a market maker.
+</Card>
+
+</CardGroup>

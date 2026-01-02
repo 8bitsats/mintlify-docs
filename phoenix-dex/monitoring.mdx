@@ -1,0 +1,177 @@
+---
+title: "Performance monitoring"
+description: "Track market maker performance and metrics"
+---
+
+Monitor your market maker's performance with comprehensive metrics and analytics. Track volume, fees, PnL, and other key performance indicators.
+
+## Get market maker performance
+
+Retrieve performance metrics for a market maker.
+
+```typescript
+const performance = await sdk.phoenixMM?.getPerformance(
+  trader.publicKey,
+  market
+);
+
+console.log('Total volume:', performance.totalVolume);
+console.log('Fees earned:', performance.feesEarned);
+console.log('Net PnL:', performance.netPnL);
+console.log('Number of trades:', performance.tradeCount);
+console.log('Uptime:', performance.uptime);
+```
+
+## Performance metrics
+
+<ParamField path="totalVolume" type="BN">
+  The total trading volume in quote tokens.
+</ParamField>
+
+<ParamField path="feesEarned" type="BN">
+  The total fees earned from market making.
+</ParamField>
+
+<ParamField path="netPnL" type="BN">
+  The net profit and loss including fees.
+</ParamField>
+
+<ParamField path="tradeCount" type="number">
+  The total number of trades executed.
+</ParamField>
+
+<ParamField path="uptime" type="number">
+  The percentage of time the market maker was active.
+</ParamField>
+
+<ParamField path="averageSpread" type="number">
+  The average spread in basis points.
+</ParamField>
+
+<ParamField path="inventoryTurnover" type="number">
+  The inventory turnover rate.
+</ParamField>
+
+## Real-time monitoring
+
+Subscribe to real-time performance updates.
+
+```typescript
+const subscription = await sdk.phoenixMM?.subscribeToPerformance(
+  trader.publicKey,
+  market,
+  (update) => {
+    console.log('Volume update:', update.volume);
+    console.log('PnL update:', update.pnl);
+    console.log('Current spread:', update.currentSpread);
+  }
+);
+
+// Unsubscribe when done
+subscription.unsubscribe();
+```
+
+## Historical performance
+
+Retrieve historical performance data.
+
+```typescript
+const history = await sdk.phoenixMM?.getPerformanceHistory(
+  trader.publicKey,
+  market,
+  {
+    startTime: new Date(Date.now() - 86400000), // Last 24 hours
+    endTime: new Date(),
+    interval: '1h', // Hourly data
+  }
+);
+
+history.forEach((dataPoint) => {
+  console.log('Time:', dataPoint.timestamp);
+  console.log('Volume:', dataPoint.volume);
+  console.log('PnL:', dataPoint.pnl);
+});
+```
+
+## Inventory tracking
+
+Monitor current inventory levels.
+
+```typescript
+const inventory = await sdk.phoenixMM?.getInventory(
+  trader.publicKey,
+  market
+);
+
+console.log('Base token balance:', inventory.baseBalance);
+console.log('Quote token balance:', inventory.quoteBalance);
+console.log('Inventory percentage:', inventory.inventoryPercentage);
+console.log('Target inventory:', inventory.targetInventory);
+```
+
+## Order book position
+
+Track your position in the order book.
+
+```typescript
+const position = await sdk.phoenixMM?.getOrderBookPosition(
+  trader.publicKey,
+  market
+);
+
+console.log('Best bid:', position.bestBid);
+console.log('Best ask:', position.bestAsk);
+console.log('Your bid:', position.yourBid);
+console.log('Your ask:', position.yourAsk);
+console.log('Bid depth ahead:', position.bidDepthAhead);
+console.log('Ask depth ahead:', position.askDepthAhead);
+```
+
+## Performance alerts
+
+Set up alerts for performance thresholds.
+
+```typescript
+await sdk.phoenixMM?.setPerformanceAlerts(
+  trader.publicKey,
+  market,
+  {
+    minPnL: -1000, // Alert if PnL drops below -1000
+    maxInventoryDeviation: 20, // Alert if inventory deviates by 20%
+    minUptime: 95, // Alert if uptime drops below 95%
+  }
+);
+```
+
+## Export performance data
+
+Export performance data for analysis.
+
+```typescript
+const data = await sdk.phoenixMM?.exportPerformanceData(
+  trader.publicKey,
+  market,
+  {
+    startTime: new Date(Date.now() - 2592000000), // Last 30 days
+    endTime: new Date(),
+    format: 'csv',
+  }
+);
+
+// Save to file
+fs.writeFileSync('performance.csv', data);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Market maker setup" icon="chart-line" href="/phoenix-dex/market-maker">
+  Set up your market maker.
+</Card>
+
+<Card title="Price strategies" icon="chart-mixed" href="/phoenix-dex/strategies">
+  Optimize your pricing strategies.
+</Card>
+
+</CardGroup>

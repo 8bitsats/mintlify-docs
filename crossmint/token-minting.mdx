@@ -1,0 +1,138 @@
+---
+title: "Token minting"
+description: "Mint tokens via Crossmint's infrastructure"
+---
+
+Use Crossmint's infrastructure to mint tokens with simplified workflows, cross-chain support, and fiat payment integration.
+
+## Mint token
+
+Create a new token using Crossmint.
+
+```typescript
+const token = await sdk.crossmint?.mintToken({
+  name: 'My Token',
+  symbol: 'MTK',
+  decimals: 9,
+  supply: 1_000_000_000,
+  recipient: wallet.publicKey.toBase58(),
+  metadata: {
+    description: 'A token for my project',
+    image: 'https://arweave.net/token-image.png',
+  },
+});
+
+console.log('Token mint:', token.mintAddress);
+console.log('Transaction:', token.transactionId);
+```
+
+## Parameters
+
+<ParamField path="name" type="string" required>
+  The name of the token.
+</ParamField>
+
+<ParamField path="symbol" type="string" required>
+  The token symbol.
+</ParamField>
+
+<ParamField path="decimals" type="number" required>
+  The number of decimal places.
+</ParamField>
+
+<ParamField path="supply" type="number" required>
+  The total token supply.
+</ParamField>
+
+<ParamField path="recipient" type="string" required>
+  The wallet address that will receive the tokens.
+</ParamField>
+
+<ParamField path="metadata" type="object">
+  Optional metadata for the token.
+</ParamField>
+
+## Token metadata
+
+Configure token metadata for display in wallets and marketplaces.
+
+```typescript
+metadata: {
+  description: 'A utility token for my DeFi protocol',
+  image: 'https://arweave.net/token-logo.png',
+  external_url: 'https://myproject.com',
+  attributes: [
+    { trait_type: 'Type', value: 'Utility' },
+    { trait_type: 'Network', value: 'Solana' },
+  ],
+}
+```
+
+## Batch minting
+
+Mint multiple tokens in a single operation.
+
+```typescript
+const tokens = await sdk.crossmint?.batchMintTokens([
+  {
+    name: 'Token A',
+    symbol: 'TKA',
+    decimals: 9,
+    supply: 1_000_000,
+    recipient: wallet1.publicKey.toBase58(),
+  },
+  {
+    name: 'Token B',
+    symbol: 'TKB',
+    decimals: 9,
+    supply: 2_000_000,
+    recipient: wallet2.publicKey.toBase58(),
+  },
+]);
+
+tokens.forEach((token) => {
+  console.log('Minted:', token.mintAddress);
+});
+```
+
+## Fiat payments
+
+Accept fiat payments for token purchases.
+
+```typescript
+const payment = await sdk.crossmint?.createPaymentLink({
+  tokenMint: token.mintAddress,
+  amount: 100, // Number of tokens
+  price: 10, // Price in USD
+  recipient: buyer.publicKey.toBase58(),
+});
+
+console.log('Payment link:', payment.url);
+```
+
+## Query token info
+
+Retrieve information about a minted token.
+
+```typescript
+const tokenInfo = await sdk.crossmint?.getTokenInfo(token.mintAddress);
+
+console.log('Name:', tokenInfo.name);
+console.log('Symbol:', tokenInfo.symbol);
+console.log('Supply:', tokenInfo.supply);
+console.log('Holders:', tokenInfo.holderCount);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent NFTs" icon="robot" href="/crossmint/agent-nfts">
+  Create agent NFTs.
+</Card>
+
+<Card title="Collection management" icon="layer-group" href="/crossmint/collections">
+  Organize tokens into collections.
+</Card>
+
+</CardGroup>

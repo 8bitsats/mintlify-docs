@@ -1,0 +1,135 @@
+---
+title: "Agent tokenization"
+description: "Convert agents into tradeable NFTs"
+---
+
+Tokenize your agents as NFTs to enable trading, ownership transfer, and fractional ownership. Agent NFTs represent ownership and control of autonomous trading agents.
+
+## Create agent NFT
+
+Convert an agent into a tradeable NFT using Crossmint.
+
+```typescript
+const nft = await sdk.crossmint?.createAgentNFT(
+  agent.agentId,
+  'My Trading Agent',
+  wallet.publicKey.toBase58()
+);
+
+console.log('NFT created:', nft.id);
+console.log('NFT mint:', nft.onChain.mintAddress);
+```
+
+## Parameters
+
+<ParamField path="agentId" type="PublicKey" required>
+  The agent ID to tokenize.
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The name of the NFT.
+</ParamField>
+
+<ParamField path="recipient" type="string" required>
+  The wallet address that will receive the NFT.
+</ParamField>
+
+## NFT metadata
+
+Agent NFTs include comprehensive metadata about the agent's capabilities and performance.
+
+```json
+{
+  "name": "My Trading Agent",
+  "description": "AI-powered arbitrage agent",
+  "image": "https://arweave.net/agent-image.png",
+  "attributes": [
+    {
+      "trait_type": "Autonomy Level",
+      "value": "High"
+    },
+    {
+      "trait_type": "Capabilities",
+      "value": "Arbitrage, Market Making"
+    },
+    {
+      "trait_type": "Total Trades",
+      "value": "1,234"
+    },
+    {
+      "trait_type": "Win Rate",
+      "value": "78%"
+    }
+  ]
+}
+```
+
+## Transfer ownership
+
+Transfer agent ownership by transferring the NFT.
+
+```typescript
+// Standard NFT transfer using Solana
+const transferIx = createTransferInstruction(
+  nftTokenAccount,
+  recipientTokenAccount,
+  wallet.publicKey,
+  1
+);
+
+const tx = new Transaction().add(transferIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Use cases
+
+### Trading agent marketplace
+
+Create a marketplace for trading autonomous agents.
+
+```typescript
+// List agent NFT for sale
+const listing = await marketplace.listNFT(
+  nft.onChain.mintAddress,
+  new BN(10 * 1e9) // 10 SOL
+);
+```
+
+### Fractional ownership
+
+Enable fractional ownership of high-performing agents.
+
+```typescript
+// Fractionalize agent NFT
+const fractions = await fractionalizer.fractionalize(
+  nft.onChain.mintAddress,
+  1000 // 1000 fractions
+);
+```
+
+### Agent portfolios
+
+Build portfolios of multiple agents with different strategies.
+
+```typescript
+// Create portfolio of agents
+const portfolio = [
+  await sdk.crossmint?.createAgentNFT(agent1.agentId, 'Arbitrage Agent', wallet.publicKey.toBase58()),
+  await sdk.crossmint?.createAgentNFT(agent2.agentId, 'Market Maker', wallet.publicKey.toBase58()),
+  await sdk.crossmint?.createAgentNFT(agent3.agentId, 'Yield Farmer', wallet.publicKey.toBase58()),
+];
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Agent creation" icon="robot" href="/agents/creation">
+  Create agents to tokenize.
+</Card>
+
+<Card title="Crossmint integration" icon="gem" href="/crossmint/overview">
+  Learn more about Crossmint integration.
+</Card>
+
+</CardGroup>

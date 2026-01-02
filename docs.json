@@ -1,17 +1,17 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "FunPump SDK",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#9945FF",
+    "light": "#B565FF",
+    "dark": "#7A2FE8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
             "group": "Getting started",
@@ -22,27 +22,51 @@
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core protocol",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "core-protocol/overview",
+              "core-protocol/token-launch",
+              "core-protocol/trading",
+              "core-protocol/bonding-curves",
+              "core-protocol/vaults",
+              "core-protocol/vesting",
+              "core-protocol/friend-accounts"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Agents",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "agents/overview",
+              "agents/creation",
+              "agents/strategies",
+              "agents/tokenization",
+              "agents/coordination"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Phoenix DEX",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "phoenix-dex/overview",
+              "phoenix-dex/market-maker",
+              "phoenix-dex/agent-integration",
+              "phoenix-dex/strategies",
+              "phoenix-dex/monitoring"
+            ]
+          },
+          {
+            "group": "Crossmint",
+            "pages": [
+              "crossmint/overview",
+              "crossmint/agent-nfts",
+              "crossmint/token-minting",
+              "crossmint/collections",
+              "crossmint/metadata"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples"
             ]
           }
         ]
@@ -55,15 +79,6 @@
             "pages": [
               "api-reference/introduction"
             ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
           }
         ]
       }
@@ -71,14 +86,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Discord",
+          "href": "https://discord.gg/funpump",
+          "icon": "discord"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Twitter",
+          "href": "https://twitter.com/funpump",
+          "icon": "twitter"
         }
       ]
     }
@@ -90,14 +105,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "GitHub",
+        "href": "https://github.com/funpump/sdk"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://funpump.io/dashboard"
     }
   },
   "contextual": {
@@ -114,9 +129,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://twitter.com/funpump",
+      "github": "https://github.com/funpump",
+      "discord": "https://discord.gg/funpump"
     }
   }
 }

@@ -1,0 +1,115 @@
+---
+title: "Friend accounts"
+description: "Coordinate group launches with shared funding"
+---
+
+Friend accounts enable multiple participants to pool SOL for coordinated token launches. This is useful for group launches, community-driven projects, and collaborative token creation.
+
+## Initialize friend account
+
+Create a friend account to coordinate group launches.
+
+```typescript
+const initFriendIx = await sdk.core.initializeFriend(wallet.publicKey);
+
+const tx = new Transaction().add(initFriendIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Deposit SOL
+
+Deposit SOL to the friend account for group launches.
+
+```typescript
+import { BN } from '@coral-xyz/anchor';
+
+const depositIx = await sdk.core.depositToFriend(
+  wallet.publicKey,
+  new BN(5 * 1e9) // 5 SOL
+);
+
+const tx = new Transaction().add(depositIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Withdraw SOL
+
+Withdraw SOL from the friend account.
+
+```typescript
+const withdrawIx = await sdk.core.withdrawFromFriend(
+  wallet.publicKey,
+  new BN(1 * 1e9) // 1 SOL
+);
+
+const tx = new Transaction().add(withdrawIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Parameters
+
+### Initialize friend account
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address that will own the friend account.
+</ParamField>
+
+### Deposit to friend account
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address depositing SOL.
+</ParamField>
+
+<ParamField path="amount" type="BN" required>
+  The amount of SOL to deposit (in lamports).
+</ParamField>
+
+### Withdraw from friend account
+
+<ParamField path="owner" type="PublicKey" required>
+  The wallet address withdrawing SOL.
+</ParamField>
+
+<ParamField path="amount" type="BN" required>
+  The amount of SOL to withdraw (in lamports).
+</ParamField>
+
+## Use cases
+
+### Group launches
+
+Pool funds from multiple participants for a coordinated token launch.
+
+```typescript
+// Each participant deposits SOL
+const depositIx = await sdk.core.depositToFriend(
+  participant.publicKey,
+  new BN(2 * 1e9) // 2 SOL per participant
+);
+```
+
+### Community projects
+
+Enable community members to contribute to token launches.
+
+```typescript
+// Community member deposits
+const depositIx = await sdk.core.depositToFriend(
+  communityMember.publicKey,
+  new BN(0.5 * 1e9) // 0.5 SOL
+);
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Token launch" icon="rocket" href="/core-protocol/token-launch">
+  Launch a token with pooled funds.
+</Card>
+
+<Card title="Trading" icon="arrow-right-arrow-left" href="/core-protocol/trading">
+  Learn how to buy and sell tokens.
+</Card>
+
+</CardGroup>

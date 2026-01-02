@@ -1,0 +1,405 @@
+---
+title: "Examples"
+description: "Working code examples and use cases for the FunPump SDK"
+---
+
+Explore complete working examples demonstrating the full capabilities of the FunPump SDK. Each example includes detailed explanations and can be run directly in your project.
+
+## Core protocol examples
+
+### Launch a token with bonding curve
+
+Create a token with a constant product bonding curve and initial liquidity.
+
+```typescript
+import { Connection, clusterApiUrl, Keypair } from '@solana/web3.js';
+import { FunPumpSDK, LaunchPlatform, CurveType } from '@funpump/sdk';
+import { BN } from '@coral-xyz/anchor';
+
+const connection = new Connection(clusterApiUrl('mainnet-beta'));
+const wallet = Keypair.generate();
+
+const sdk = new FunPumpSDK({
+  apiKey: 'your-api-key',
+  connection,
+});
+
+// Launch token
+const { instruction, tokenMint } = await sdk.core.launchToken({
+  creator: wallet.publicKey,
+  name: 'My Token',
+  symbol: 'MTK',
+  uri: 'https://arweave.net/metadata',
+  decimals: 9,
+  supply: new BN(1_000_000_000).mul(new BN(10).pow(new BN(9))),
+  initialSolReserves: new BN(1).mul(new BN(10).pow(new BN(9))),
+  platform: LaunchPlatform.FunPump,
+  curve: CurveType.ConstantProduct,
+});
+
+const tx = new Transaction().add(instruction);
+await sendAndConfirmTransaction(connection, tx, [wallet, tokenMint]);
+```
+
+### Buy and sell tokens
+
+Execute trades on a bonding curve with slippage protection.
+
+```typescript
+// Buy tokens
+const buyIx = await sdk.core.buyTokens({
+  buyer: wallet.publicKey,
+  tokenMint,
+  solAmount: new BN(0.1 * 1e9), // 0.1 SOL
+  slippageBps: 100, // 1% slippage
+});
+
+const buyTx = new Transaction().add(buyIx);
+await sendAndConfirmTransaction(connection, buyTx, [wallet]);
+
+// Sell tokens
+const sellIx = await sdk.core.sellTokens({
+  seller: wallet.publicKey,
+  tokenMint,
+  tokenAmount: new BN(100_000 * 1e9), // 100k tokens
+  slippageBps: 100,
+});
+
+const sellTx = new Transaction().add(sellIx);
+await sendAndConfirmTransaction(connection, sellTx, [wallet]);
+```
+
+### Lock tokens in vault
+
+Create a vault and lock tokens for a specified duration.
+
+```typescript
+// Initialize vault
+const initVaultIx = await sdk.core.initializeVault(
+  wallet.publicKey,
+  tokenMint
+);
+
+// Lock tokens for 30 days
+const lockIx = await sdk.core.lockTokens({
+  owner: wallet.publicKey,
+  tokenMint,
+  amount: new BN(50_000 * 1e9),
+  lockDurationDays: 30,
+});
+
+const tx = new Transaction().add(initVaultIx, lockIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+### Create vesting schedule
+
+Implement market cap-based vesting for team tokens.
+
+```typescript
+// Initialize vesting
+const vestingIx = await sdk.core.initializeVesting({
+  creator: wallet.publicKey,
+  beneficiary: beneficiaryPubkey,
+  tokenMint,
+  totalAmount: new BN(1_000_000 * 1e9),
+  startDate: new Date(Date.now() + 86400000),
+  endDate: new Date(Date.now() + 31536000000),
+  targetMarketCap: new BN(1_000_000 * 1e9),
+});
+
+// Lock tokens for vesting
+const lockVestingIx = await sdk.core.lockTokensForVesting(
+  wallet.publicKey,
+  beneficiary,
+  tokenMint,
+  new BN(1_000_000 * 1e9)
+);
+
+const tx = new Transaction().add(vestingIx, lockVestingIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Agent examples
+
+### Create a trading agent
+
+Deploy an autonomous trading agent with custom capabilities.
+
+```typescript
+const agent = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Alpha Trader',
+  description: 'AI-powered arbitrage agent',
+  autonomyLevel: 'high',
+  capabilities: ['arbitrage', 'market_making'],
+});
+
+console.log('Agent created:', agent.agentId.toBase58());
+```
+
+### Deploy a custom strategy
+
+Create and deploy a trading strategy to an agent.
+
+```typescript
+const strategy = await sdk.agent.createCustomStrategy({
+  name: 'Volatility Arbitrage',
+  description: 'Exploit price differences during volatility',
+  riskLevel: 'medium',
+  expectedAPY: 45,
+  actions: [
+    {
+      actionType: 'arbitrage',
+      parameters: {
+        minSpreadBps: 50,
+        maxPositionSize: 1000,
+        dexes: ['phoenix', 'raydium', 'orca'],
+      },
+    },
+  ],
+});
+
+await sdk.agent.deployStrategy(agent.agentId, strategy);
+```
+
+### Create agent with token
+
+Launch an agent and token simultaneously.
+
+```typescript
+const { agent, tokenMint } = await sdk.agent.createAgentWithToken(
+  creator.publicKey,
+  {
+    name: 'DeFi Master',
+    description: 'Yield optimization specialist',
+    autonomyLevel: 'high',
+    tokenSymbol: 'DEFI',
+    tokenSupply: 1_000_000,
+    capabilities: ['yield_farming', 'auto_compound'],
+  }
+);
+
+console.log('Agent ID:', agent.agentId.toBase58());
+console.log('Token Mint:', tokenMint.toBase58());
+```
+
+### Multi-agent coordination
+
+Deploy multiple agents that work together.
+
+```typescript
+// Create agents
+const arbitrageAgent = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Arbitrage Specialist',
+  autonomyLevel: 'high',
+  capabilities: ['arbitrage'],
+});
+
+const marketMaker = await sdk.agent.createAgent(wallet.publicKey, {
+  name: 'Market Maker',
+  autonomyLevel: 'high',
+  capabilities: ['market_making'],
+});
+
+// Create coordination group
+const swarm = await sdk.agent.createSwarm({
+  name: 'Alpha Swarm',
+  agents: [arbitrageAgent.agentId, marketMaker.agentId],
+  coordinationStrategy: 'portfolio_optimization',
+});
+```
+
+## Phoenix DEX examples
+
+### Initialize market maker
+
+Set up a market maker on Phoenix DEX.
+
+```typescript
+const config = {
+  market: marketPublicKey,
+  quoteEdgeInBps: 30,
+  quoteSizeInQuoteAtoms: 1_000_000_000,
+  postOnly: true,
+  priceImprovementBehavior: 'dime' as const,
+};
+
+const tx = await sdk.phoenixMM?.initializeMarketMaker(
+  trader.publicKey,
+  config
+);
+
+await sendAndConfirmTransaction(connection, tx, [trader]);
+```
+
+### Deploy agent as market maker
+
+Configure an agent to act as a market maker.
+
+```typescript
+const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+  agent.agentId,
+  market,
+  {
+    market,
+    quoteEdgeInBps: 25,
+    quoteSizeInQuoteAtoms: 5_000_000_000,
+    priceImprovementBehavior: 'join',
+    inventoryTarget: 50,
+    rebalanceThreshold: 10,
+  }
+);
+```
+
+## Crossmint examples
+
+### Create agent NFT
+
+Convert an agent into a tradeable NFT.
+
+```typescript
+const nft = await sdk.crossmint?.createAgentNFT(
+  agent.agentId,
+  'My Trading Agent',
+  wallet.publicKey.toBase58()
+);
+
+console.log('NFT created:', nft.id);
+console.log('NFT mint:', nft.onChain.mintAddress);
+```
+
+### Create NFT collection
+
+Organize agent NFTs into a collection.
+
+```typescript
+const collection = await sdk.crossmint?.createCollection({
+  name: 'FunPump Agents',
+  description: 'A collection of autonomous trading agents',
+  symbol: 'FPAGENT',
+  image: 'https://arweave.net/collection-image.png',
+  externalUrl: 'https://funpump.io/agents',
+});
+
+// Add agent NFT to collection
+await sdk.crossmint?.addToCollection(
+  collection.id,
+  nft.onChain.mintAddress
+);
+```
+
+## Complete workflow example
+
+A complete example combining multiple features.
+
+```typescript
+import { Connection, clusterApiUrl, Keypair, Transaction } from '@solana/web3.js';
+import { FunPumpSDK, LaunchPlatform, CurveType } from '@funpump/sdk';
+import { BN } from '@coral-xyz/anchor';
+
+async function completeWorkflow() {
+  // Initialize SDK
+  const connection = new Connection(clusterApiUrl('mainnet-beta'));
+  const wallet = Keypair.generate();
+  
+  const sdk = new FunPumpSDK({
+    apiKey: 'your-api-key',
+    connection,
+    crossmintApiKey: 'your-crossmint-key',
+    phoenixEnabled: true,
+  });
+
+  // 1. Launch token
+  const { instruction, tokenMint } = await sdk.core.launchToken({
+    creator: wallet.publicKey,
+    name: 'Agent Token',
+    symbol: 'AGENT',
+    uri: 'https://arweave.net/metadata',
+    decimals: 9,
+    supply: new BN(1_000_000_000).mul(new BN(10).pow(new BN(9))),
+    initialSolReserves: new BN(1).mul(new BN(10).pow(new BN(9))),
+    platform: LaunchPlatform.FunPump,
+    curve: CurveType.ConstantProduct,
+  });
+
+  const launchTx = new Transaction().add(instruction);
+  await sendAndConfirmTransaction(connection, launchTx, [wallet, tokenMint]);
+
+  // 2. Create agent
+  const agent = await sdk.agent.createAgent(wallet.publicKey, {
+    name: 'Alpha Trader',
+    description: 'AI-powered trading agent',
+    autonomyLevel: 'high',
+    capabilities: ['arbitrage', 'market_making'],
+  });
+
+  // 3. Deploy strategy
+  const strategy = await sdk.agent.createCustomStrategy({
+    name: 'Multi-DEX Arbitrage',
+    description: 'Arbitrage across multiple DEXes',
+    riskLevel: 'medium',
+    expectedAPY: 35,
+    actions: [
+      {
+        actionType: 'arbitrage',
+        parameters: {
+          minSpreadBps: 30,
+          maxPositionSize: 5000,
+          dexes: ['phoenix', 'raydium', 'orca'],
+        },
+      },
+    ],
+  });
+
+  await sdk.agent.deployStrategy(agent.agentId, strategy);
+
+  // 4. Tokenize agent as NFT
+  const nft = await sdk.crossmint?.createAgentNFT(
+    agent.agentId,
+    'Alpha Trader NFT',
+    wallet.publicKey.toBase58()
+  );
+
+  // 5. Deploy as Phoenix market maker
+  const deployment = await sdk.phoenixMM?.deployAgentAsMarketMaker(
+    agent.agentId,
+    marketPublicKey,
+    {
+      market: marketPublicKey,
+      quoteEdgeInBps: 25,
+      quoteSizeInQuoteAtoms: 5_000_000_000,
+      priceImprovementBehavior: 'join',
+    }
+  );
+
+  console.log('Workflow complete!');
+  console.log('Token:', tokenMint.toBase58());
+  console.log('Agent:', agent.agentId.toBase58());
+  console.log('NFT:', nft.onChain.mintAddress);
+  console.log('Market Maker:', deployment.deploymentId);
+}
+
+completeWorkflow();
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+
+<Card title="Core protocol" icon="coins" href="/core-protocol/overview">
+  Explore core protocol features.
+</Card>
+
+<Card title="Agents" icon="robot" href="/agents/overview">
+  Learn about agent management.
+</Card>
+
+<Card title="Phoenix DEX" icon="chart-line" href="/phoenix-dex/overview">
+  Discover Phoenix DEX integration.
+</Card>
+
+<Card title="API reference" icon="terminal" href="/api-reference/introduction">
+  View complete API documentation.
+</Card>
+
+</CardGroup>
